@@ -1,8 +1,3 @@
-"""
-Startup script for Wispbye hosting.
-Runs both the Discord bot and Flask dashboard backend.
-"""
-
 import subprocess
 import sys
 import os
@@ -10,6 +5,11 @@ import signal
 import threading
 import time
 from queue import Queue
+from dotenv import load_dotenv
+
+# Load .env explicitly
+load_dotenv()
+print(f"[DEBUG] start.py loaded DISCORD_REDIRECT_URI: {os.getenv('DISCORD_REDIRECT_URI')}")
 
 # Queue untuk collecting output dari semua proses
 output_queue = Queue()
