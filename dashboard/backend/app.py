@@ -7,7 +7,7 @@ import os
 import sys
 import time
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify, session, redirect
+from flask import Flask, request, jsonify, session, redirect, send_from_directory
 from flask_cors import CORS
 from functools import wraps
 import requests
@@ -45,7 +45,8 @@ print(f'[DEBUG] CLIENT_SECRET={DISCORD_CLIENT_SECRET[:10]}...{DISCORD_CLIENT_SEC
 print(f'[DEBUG] REDIRECT_URI={REDIRECT_URI}')
 
 # Create Flask app
-app = Flask(__name__)
+# Create Flask app (Serve frontend from dist folder)
+app = Flask(__name__, static_folder='../frontend/dist')
 app.secret_key = DASHBOARD_SECRET_KEY or 'dev-secret-key-change-in-production'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -147,10 +148,17 @@ def can_manage_guild(guild):
 # ROUTES
 # ============================================================================
 
-@app.route('/')
-def index():
-    """Redirect root to frontend."""
-    return redirect(FRONTEND_URL or 'http://localhost:5190')
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    """Serve Vue frontend for all non-API routes."""
+    if path.startswith('api/') or path.startswith('api'):
+        return jsonify({'error': 'Not found'}), 404
+        
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+        
+    return send_from_directory(app.static_folder, 'index.html')
 
 
 @app.route('/api/auth/discord')
