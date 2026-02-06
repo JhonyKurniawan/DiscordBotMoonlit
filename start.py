@@ -38,12 +38,17 @@ def run_flask():
     """Jalankan Flask backend dengan gunicorn atau langsung"""
     print("[START] Starting Flask Backend...")
     
+    # Get port from environment or default to 12066
+    port = os.environ.get('SERVER_PORT', '12066')
+    bind_address = f"0.0.0.0:{port}"
+    
     # Try using gunicorn first (production)
     try:
         import gunicorn
+        print(f"[INFO] Using Gunicorn on {bind_address}")
         return subprocess.Popen(
             [sys.executable, "-m", "gunicorn", 
-             "--bind", "0.0.0.0:12066",
+             "--bind", bind_address,
              "--workers", "2",
              "--timeout", "120",
              "dashboard.backend.app:app"],
@@ -54,13 +59,13 @@ def run_flask():
         )
     except ImportError:
         # Fallback to Flask development server
-        print("[WARN] Gunicorn not found, using Flask development server")
-        os.environ['FLASK_RUN_PORT'] = '12066'
+        print(f"[WARN] Gunicorn not found, using Flask development server on port {port}")
+        os.environ['FLASK_RUN_PORT'] = port
         os.environ['FLASK_RUN_HOST'] = '0.0.0.0'
         return subprocess.Popen(
             [sys.executable, "-m", "flask", 
              "--app", "dashboard.backend.app",
-             "run", "--host", "0.0.0.0", "--port", "12066"],
+             "run", "--host", "0.0.0.0", "--port", port],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
