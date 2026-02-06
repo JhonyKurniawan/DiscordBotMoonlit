@@ -147,6 +147,12 @@ def can_manage_guild(guild):
 # ROUTES
 # ============================================================================
 
+@app.route('/')
+def index():
+    """Redirect root to frontend."""
+    return redirect(FRONTEND_URL or 'http://localhost:5190')
+
+
 @app.route('/api/auth/discord')
 def auth_discord():
     """Redirect to Discord OAuth2 login."""
@@ -1265,7 +1271,7 @@ def not_found(error):
     if request.path.startswith('/api/'):
         return jsonify({'error': 'Not found'}), 404
     # For non-API routes, redirect to Vue frontend
-    return redirect('http://localhost:5190/')
+    return redirect(FRONTEND_URL or 'http://localhost:5190')
 
 
 @app.errorhandler(500)
@@ -1273,10 +1279,10 @@ def internal_error(error):
     """Handle 500 errors."""
     if request.path.startswith('/api/'):
         response = jsonify({'error': 'Internal server error', 'details': str(error)})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5190')
+        response.headers.add('Access-Control-Allow-Origin', FRONTEND_URL or 'http://localhost:5190')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response, 500
-    return redirect('http://localhost:5190/')
+    return redirect(FRONTEND_URL or 'http://localhost:5190')
 
 
 # ============================================================================
