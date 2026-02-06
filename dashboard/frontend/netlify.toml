@@ -6,7 +6,21 @@
   # command = "npm run build"
   # publish = "dist"
 
-# Handle SPA routing - redirect all requests to index.html
+# Proxy API requests to Wispbye backend (bypasses Mixed Content)
+[[redirects]]
+  from = "/api/*"
+  to = "http://87.106.105.24:12066/api/:splat"
+  status = 200
+  force = true
+
+# Proxy callback to backend for OAuth
+[[redirects]]
+  from = "/callback"
+  to = "http://87.106.105.24:12066/callback"
+  status = 200
+  force = true
+
+# Handle SPA routing - redirect all other requests to index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"
