@@ -36,6 +36,9 @@ except ImportError:
     BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN', '')
     DASHBOARD_BASE_URL = os.environ.get('DASHBOARD_BASE_URL', 'http://localhost:5001')
 
+# Frontend URL for redirects (production: Netlify URL)
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5190')
+
 # Debug print
 print(f'[DEBUG] CLIENT_ID={DISCORD_CLIENT_ID}')
 print(f'[DEBUG] CLIENT_SECRET={DISCORD_CLIENT_SECRET[:10]}...{DISCORD_CLIENT_SECRET[-4:]}')
@@ -47,8 +50,11 @@ app.secret_key = DASHBOARD_SECRET_KEY or 'dev-secret-key-change-in-production'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-# Enable CORS for frontend development
-CORS(app, supports_credentials=True, origins=['http://localhost:5190', 'http://localhost:5174'],
+# Enable CORS for frontend (development + production)
+cors_origins = ['http://localhost:5190', 'http://localhost:5174']
+if FRONTEND_URL and FRONTEND_URL not in cors_origins:
+    cors_origins.append(FRONTEND_URL)
+CORS(app, supports_credentials=True, origins=cors_origins,
      allow_headers=['Content-Type', 'Authorization'],
      methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 
@@ -153,7 +159,7 @@ def callback():
     code = request.args.get('code')
     if not code:
         # This might be a callback from frontend (already has token), ignore
-        return redirect('http://localhost:5190/')
+        return redirect(f'{FRONTEND_URL}/')
 
     print(f'[INFO] Callback received, REDIRECT_URI={REDIRECT_URI}')
 
@@ -172,14 +178,14 @@ def callback():
 
     if response.status_code != 200:
         print(f'[ERROR] Token exchange failed: {response.text}')
-        return redirect('http://localhost:5190/?error=token_exchange_failed')
+        return redirect(f'{FRONTEND_URL}/?error=token_exchange_failed')
 
     token_data = response.json()
     access_token = token_data.get('access_token')
 
     if not access_token:
         print(f'[ERROR] No access token in response: {token_data}')
-        return redirect('http://localhost:5190/?error=no_access_token')
+        return redirect(f'{FRONTEND_URL}/?error=no_access_token')
 
     # Get user info
     headers = {'Authorization': f'Bearer {access_token}'}
@@ -187,7 +193,7 @@ def callback():
 
     if user_response.status_code != 200:
         print(f'[ERROR] User fetch failed: {user_response.text}')
-        return redirect('http://localhost:5190/?error=user_fetch_failed')
+        return redirect(f'{FRONTEND_URL}/?error=user_fetch_failed')
 
     user_data = user_response.json()
     print(f'[INFO] Logged in user: {user_data.get("username")}')
@@ -205,7 +211,7 @@ def callback():
         'avatar': user_data.get('avatar', ''),
         'discriminator': user_data.get('discriminator', '0')
     })
-    return redirect(f'http://localhost:5190/callback?{params}')
+    return redirect(f'{FRONTEND_URL}/callback?{params}')
 
 
 @app.route('/api/auth/logout')
