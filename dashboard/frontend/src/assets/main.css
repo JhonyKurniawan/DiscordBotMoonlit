@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-discord-bg-primary text-discord-text-primary;
+  }
+}
+
+@layer components {
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-discord-bg-secondary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-discord-bg-tertiary rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-discord-text-muted;
+  }
+
+  /* Card component base */
+  .card {
+    @apply bg-discord-bg-secondary rounded-xl p-6;
+  }
+
+  /* Input base */
+  .input {
+    @apply w-full bg-discord-bg-tertiary border-0 rounded-lg px-4 py-2.5 text-discord-text-primary placeholder-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple;
+  }
+
+  /* Toggle switch */
+  .toggle-switch {
+    @apply relative w-12 h-7 bg-discord-bg-tertiary rounded-full cursor-pointer transition-colors;
+  }
+
+  .toggle-switch.active {
+    @apply bg-discord-green;
+  }
+
+  .toggle-switch::after {
+    content: '';
+    @apply absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform;
+  }
+
+  .toggle-switch.active::after {
+    @apply translate-x-5;
+  }
+
+  /* Legacy button base - kept for potential fallback */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-discord-blurple to-indigo-500 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply bg-discord-bg-tertiary text-discord-text-primary hover:bg-discord-bg-hover;
+  }
+
+  .btn-danger {
+    @apply bg-gradient-to-r from-discord-red to-red-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn:disabled {
+    @apply opacity-50 cursor-not-allowed transform-none;
+  }
+}
