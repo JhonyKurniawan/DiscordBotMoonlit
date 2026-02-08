@@ -1310,4 +1310,6 @@ if __name__ == '__main__':
     db.init_db()
 
     # Run development server
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    # Use PORT environment variable for cloud deployment, default to 5001 for local
+    port = int(os.getenv('PORT', 5001))
+    app.run(host='0.0.0.0', port=port, debug=True)

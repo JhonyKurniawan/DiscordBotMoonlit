@@ -5,7 +5,7 @@
   "branch": "main",
   "python_version": "3.10",
   "build_command": "pip install -r requirements.txt",
-  "start_command": "python run.py",
+  "start_command": "python start.py",
   "environment": {
     "DISCORD_BOT_TOKEN": "${DISCORD_BOT_TOKEN}",
     "DISCORD_CLIENT_ID": "${DISCORD_CLIENT_ID}",
@@ -26,7 +26,7 @@
     "DATABASE_URL": "Required - PostgreSQL/Supabase connection string",
     "GROQ_API_KEY": "Required - Groq API key for chatbot"
   },
-  "ports": [8080],
+  "ports": [12066],
   "health_check_path": "/",
   "autodeploy": true
 }
