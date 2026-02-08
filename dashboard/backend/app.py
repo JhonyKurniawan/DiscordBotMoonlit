@@ -145,9 +145,6 @@ def can_manage_guild(guild):
 # ROUTES
 # ============================================================================
 
-# Serve Vue Frontend (Production)
-@app.route('/')
-# Serve Vue Frontend (Production) - IMPORTANT: This must be LAST route
 @app.route('/api/auth/discord')
 def auth_discord():
     """Redirect to Discord OAuth2 login."""
@@ -1270,12 +1267,6 @@ def serve_frontend(path=''):
     if path and os.path.exists(os.path.join(FRONTEND_DIST, path)):
         return send_from_directory(FRONTEND_DIST, path)
     # For SPA routing, always return index.html
-    return send_from_directory(FRONTEND_DIST, 'index.html')
-
-
-@app.route('/')
-def serve_index():
-    """Serve Vue frontend index page."""
     return send_from_directory(FRONTEND_DIST, 'index.html')
 
 
