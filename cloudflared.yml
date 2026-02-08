@@ -1,0 +1,16 @@
+# File: cloudflared.yml
+tunnel: 56f6de19-9360-44f6-b955-e01c44fbae45  # Ganti dengan Tunnel ID Anda
+
+credentials-file: C:\Users\morville\.cloudflared\56f6de19-9360-44f6-b955-e01c44fbae45.json  # Ganti path sesuai
+
+ingress:
+  # Dashboard Flask
+  - hostname: moonlit-bot.my.id
+    service: http://localhost:5001
+
+  # Atau subdomain untuk dashboard:
+  # - hostname: dashboard.moonlit-bot.my.id
+  #   service: http://localhost:5001
+
+  # Fallback untuk traffic lain
+  - service: http_status:404

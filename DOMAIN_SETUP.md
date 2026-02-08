@@ -95,7 +95,7 @@ cloudflared tunnel create discord-bot
 
 Output akan menampilkan **Tunnel ID**, simpan! Contoh:
 ```
-Tunnel ID: abc123-def456-ghi789
+Tunnel ID: 56f6de19-9360-44f6-b955-e01c44fbae45
 ```
 
 ### 4. Buat File Konfigurasi
@@ -104,9 +104,9 @@ Buat file `cloudflared.yml` di folder project (atau di `C:\Users\<User>\.cloudfl
 
 ```yaml
 # File: cloudflared.yml
-tunnel: abc123-def456-ghi789  # Ganti dengan Tunnel ID Anda
+tunnel: 56f6de19-9360-44f6-b955-e01c44fbae45  # Ganti dengan Tunnel ID Anda
 
-credentials-file: C:\Users\<YourUser>\.cloudflared\<tunnel-id>.json  # Ganti path sesuai
+credentials-file: C:\Users\morville\.cloudflared\56f6de19-9360-44f6-b955-e01c44fbae45.json  # Ganti path sesuai
 
 ingress:
   # Dashboard Flask
