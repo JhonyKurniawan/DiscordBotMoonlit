@@ -7,9 +7,9 @@ tunnel: 56f6de19-9360-44f6-b955-e01c44fbae45
 credentials-file: C:\Users\morville\.cloudflared\56f6de19-9360-44f6-b955-e01c44fbae45.json
 
 ingress:
-  # All traffic to moonlit-bot.my.id -> Flask (port 8080)
+  # All traffic to moonlit-bot.my.id -> Flask (port 5001)
   - hostname: moonlit-bot.my.id
-    service: http://127.0.0.1:8080
+    service: http://127.0.0.1:5001
 
   # Fallback
   - service: http_status:404

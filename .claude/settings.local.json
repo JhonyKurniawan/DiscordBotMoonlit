@@ -12,7 +12,8 @@
       "mcp__web-reader__webReader",
       "Bash(nc:*)",
       "Bash(netstat:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "mcp__zread__search_doc"
     ]
   }
 }

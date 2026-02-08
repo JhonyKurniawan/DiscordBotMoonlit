@@ -1,0 +1,32 @@
+{
+  "name": "Discord Bot Moonlit",
+  "description": "Discord bot dengan leveling, welcome card, dashboard web, dan music player",
+  "repository": "https://github.com/JhonyKurniawan/DiscordBotMoonlit.git",
+  "branch": "main",
+  "python_version": "3.10",
+  "build_command": "pip install -r requirements.txt",
+  "start_command": "python run.py",
+  "environment": {
+    "DISCORD_BOT_TOKEN": "${DISCORD_BOT_TOKEN}",
+    "DISCORD_CLIENT_ID": "${DISCORD_CLIENT_ID}",
+    "DISCORD_CLIENT_SECRET": "${DISCORD_CLIENT_SECRET}",
+    "DISCORD_REDIRECT_URI": "${DISCORD_REDIRECT_URI}",
+    "DASHBOARD_SECRET_KEY": "${DASHBOARD_SECRET_KEY}",
+    "DASHBOARD_BASE_URL": "${DASHBOARD_BASE_URL}",
+    "DATABASE_URL": "${DATABASE_URL}",
+    "GROQ_API_KEY": "${GROQ_API_KEY}"
+  },
+  "env_variables": {
+    "DISCORD_BOT_TOKEN": "Required - Discord Bot Token",
+    "DISCORD_CLIENT_ID": "Required - Discord Client ID",
+    "DISCORD_CLIENT_SECRET": "Required - Discord Client Secret",
+    "DISCORD_REDIRECT_URI": "Required - Redirect URI (e.g., https://moonlit-bot.my.id/callback)",
+    "DASHBOARD_SECRET_KEY": "Required - Flask secret key",
+    "DASHBOARD_BASE_URL": "Required - Dashboard base URL",
+    "DATABASE_URL": "Required - PostgreSQL/Supabase connection string",
+    "GROQ_API_KEY": "Required - Groq API key for chatbot"
+  },
+  "ports": [8080],
+  "health_check_path": "/",
+  "autodeploy": true
+}

@@ -1,6 +1,11 @@
 # Environment & Secrets
+.env
 *.db
 nul
+=4.12.0
+=4.2.0
+test_border.png
+test_goodbye_border.png
 
 # Python
 __pycache__/
@@ -16,16 +21,19 @@ venv/
 node_modules/
 .npm
 .yarn
+package-lock.json
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+.claude/
 
 # OS
 .DS_Store
 Thumbs.db
+Desktop.ini
 
 # Uploads (user generated content)
 uploads/
@@ -38,3 +46,6 @@ logs/
 dist/
 build/
 *.egg-info/
+
+# WispByte deployment
+.wispbyte/
