@@ -147,15 +147,7 @@ def can_manage_guild(guild):
 
 # Serve Vue Frontend (Production)
 @app.route('/')
-@app.route('/<path:path>')
-def serve_frontend(path=''):
-    """Serve Vue frontend from dist folder."""
-    if path and os.path.exists(os.path.join(FRONTEND_DIST, path)):
-        return send_from_directory(FRONTEND_DIST, path)
-    # For SPA routing, always return index.html
-    return send_from_directory(FRONTEND_DIST, 'index.html')
-
-
+# Serve Vue Frontend (Production) - IMPORTANT: This must be LAST route
 @app.route('/api/auth/discord')
 def auth_discord():
     """Redirect to Discord OAuth2 login."""
@@ -221,6 +213,9 @@ def callback():
         'discriminator': user_data.get('discriminator', '0')
     })
     return redirect(f'https://moonlit-bot.my.id/callback?{params}')
+
+
+# All other routes below...
 
 
 @app.route('/api/auth/logout')
@@ -1262,6 +1257,26 @@ def proxy_avatar():
     except Exception as e:
         print(f"[ERROR] Failed to proxy avatar: {e}")
         return jsonify({'error': 'Failed to fetch avatar'}), 500
+
+
+# ============================================================================
+# FRONTEND SERVE (SPA) - Must be LAST route
+# ============================================================================
+
+@app.route('/<path:path>')
+def serve_frontend(path=''):
+    """Serve Vue frontend from dist folder for SPA routing."""
+    # First check if it's a static file in dist
+    if path and os.path.exists(os.path.join(FRONTEND_DIST, path)):
+        return send_from_directory(FRONTEND_DIST, path)
+    # For SPA routing, always return index.html
+    return send_from_directory(FRONTEND_DIST, 'index.html')
+
+
+@app.route('/')
+def serve_index():
+    """Serve Vue frontend index page."""
+    return send_from_directory(FRONTEND_DIST, 'index.html')
 
 
 # ============================================================================
