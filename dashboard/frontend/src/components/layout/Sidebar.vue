@@ -5,6 +5,19 @@ import { useGuildStore } from '@/stores/guild'
 import { useAuthStore } from '@/stores/auth'
 import { useLocaleStore } from '@/stores/locale'
 
+const props = defineProps({
+  isOpen: {
+    type: Boolean,
+    default: true
+  },
+  isMobile: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits(['close'])
+
 const router = useRouter()
 const route = useRoute()
 const guildStore = useGuildStore()
@@ -36,11 +49,18 @@ const currentGuildIcon = computed(() => {
 function navigateToTab(tabPath) {
   if (guildStore.selectedGuildId) {
     router.push(`/dashboard/${guildStore.selectedGuildId}/${tabPath}`)
+    // Close sidebar on mobile after navigation
+    if (props.isMobile) {
+      emit('close')
+    }
   }
 }
 
 function goToServerSelect() {
   router.push('/servers')
+  if (props.isMobile) {
+    emit('close')
+  }
 }
 
 function logout() {
@@ -56,10 +76,32 @@ function onImageError(event) {
     next.style.display = 'flex'
   }
 }
+
+function closeSidebar() {
+  emit('close')
+}
 </script>
 
 <template>
-  <aside class="w-64 bg-discord-bg-secondary border-r border-discord-bg-primary flex flex-col">
+  <div class="sidebar-wrapper">
+    <!-- Mobile Backdrop Overlay -->
+    <Transition name="fade">
+      <div 
+        v-if="isMobile && isOpen" 
+        class="fixed inset-0 bg-black/50 z-40 lg:hidden"
+        @click="closeSidebar"
+      ></div>
+    </Transition>
+
+    <!-- Sidebar -->
+    <aside 
+      v-show="isOpen"
+      class="w-64 bg-discord-bg-secondary border-r border-discord-bg-primary flex flex-col h-full"
+      :class="{
+        'fixed inset-y-0 left-0 z-50 shadow-2xl': isMobile,
+        'relative': !isMobile
+      }"
+    >
     <!-- Header with back button -->
     <div class="p-4 border-b border-discord-bg-primary">
       <button
@@ -174,4 +216,6 @@ function onImageError(event) {
       </div>
     </div>
   </aside>
+  </div>
 </template>
+

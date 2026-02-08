@@ -696,8 +696,8 @@ function getAvatarUrl(entry) {
       </div>
 
       <!-- Podium for Top 3 -->
-      <div v-if="filteredLeaderboard.length >= 3 && !leaderboardSearch" class="mb-8">
-        <div class="flex items-end justify-center gap-4">
+      <div v-if="filteredLeaderboard.length >= 3 && !leaderboardSearch" class="mb-8 overflow-x-auto">
+        <div class="flex items-end justify-center gap-2 sm:gap-4 min-w-[300px] scale-[0.85] sm:scale-100 origin-center">
           <!-- 2nd Place -->
           <div class="flex flex-col items-center">
             <div class="relative mb-2">

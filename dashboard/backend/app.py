@@ -7,7 +7,7 @@ import os
 import sys
 import time
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify, session, redirect, send_from_directory
+from flask import Flask, request, jsonify, session, redirect
 from flask_cors import CORS
 from functools import wraps
 import requests
@@ -36,26 +36,19 @@ except ImportError:
     BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN', '')
     DASHBOARD_BASE_URL = os.environ.get('DASHBOARD_BASE_URL', 'http://localhost:5001')
 
-# Frontend URL for redirects (production: Netlify URL)
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5190')
-
 # Debug print
 print(f'[DEBUG] CLIENT_ID={DISCORD_CLIENT_ID}')
 print(f'[DEBUG] CLIENT_SECRET={DISCORD_CLIENT_SECRET[:10]}...{DISCORD_CLIENT_SECRET[-4:]}')
 print(f'[DEBUG] REDIRECT_URI={REDIRECT_URI}')
 
 # Create Flask app
-# Create Flask app (Serve frontend from dist folder)
-app = Flask(__name__, static_folder='../frontend/dist')
+app = Flask(__name__)
 app.secret_key = DASHBOARD_SECRET_KEY or 'dev-secret-key-change-in-production'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-# Enable CORS for frontend (development + production)
-cors_origins = ['http://localhost:5190', 'http://localhost:5174']
-if FRONTEND_URL and FRONTEND_URL not in cors_origins:
-    cors_origins.append(FRONTEND_URL)
-CORS(app, supports_credentials=True, origins=cors_origins,
+# Enable CORS for frontend development
+CORS(app, supports_credentials=True, origins=['http://localhost:5190', 'http://localhost:5174'],
      allow_headers=['Content-Type', 'Authorization'],
      methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 
@@ -148,19 +141,6 @@ def can_manage_guild(guild):
 # ROUTES
 # ============================================================================
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    """Serve Vue frontend for all non-API routes."""
-    if path.startswith('api/') or path.startswith('api'):
-        return jsonify({'error': 'Not found'}), 404
-        
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-        
-    return send_from_directory(app.static_folder, 'index.html')
-
-
 @app.route('/api/auth/discord')
 def auth_discord():
     """Redirect to Discord OAuth2 login."""
@@ -173,7 +153,7 @@ def callback():
     code = request.args.get('code')
     if not code:
         # This might be a callback from frontend (already has token), ignore
-        return redirect(f'{FRONTEND_URL}/')
+        return redirect('http://localhost:5190/')
 
     print(f'[INFO] Callback received, REDIRECT_URI={REDIRECT_URI}')
 
@@ -192,14 +172,14 @@ def callback():
 
     if response.status_code != 200:
         print(f'[ERROR] Token exchange failed: {response.text}')
-        return redirect(f'{FRONTEND_URL}/?error=token_exchange_failed')
+        return redirect('http://localhost:5190/?error=token_exchange_failed')
 
     token_data = response.json()
     access_token = token_data.get('access_token')
 
     if not access_token:
         print(f'[ERROR] No access token in response: {token_data}')
-        return redirect(f'{FRONTEND_URL}/?error=no_access_token')
+        return redirect('http://localhost:5190/?error=no_access_token')
 
     # Get user info
     headers = {'Authorization': f'Bearer {access_token}'}
@@ -207,7 +187,7 @@ def callback():
 
     if user_response.status_code != 200:
         print(f'[ERROR] User fetch failed: {user_response.text}')
-        return redirect(f'{FRONTEND_URL}/?error=user_fetch_failed')
+        return redirect('http://localhost:5190/?error=user_fetch_failed')
 
     user_data = user_response.json()
     print(f'[INFO] Logged in user: {user_data.get("username")}')
@@ -225,7 +205,7 @@ def callback():
         'avatar': user_data.get('avatar', ''),
         'discriminator': user_data.get('discriminator', '0')
     })
-    return redirect(f'{FRONTEND_URL}/callback?{params}')
+    return redirect(f'http://localhost:5190/callback?{params}')
 
 
 @app.route('/api/auth/logout')
@@ -1279,7 +1259,7 @@ def not_found(error):
     if request.path.startswith('/api/'):
         return jsonify({'error': 'Not found'}), 404
     # For non-API routes, redirect to Vue frontend
-    return redirect(FRONTEND_URL or 'http://localhost:5190')
+    return redirect('http://localhost:5190/')
 
 
 @app.errorhandler(500)
@@ -1287,10 +1267,10 @@ def internal_error(error):
     """Handle 500 errors."""
     if request.path.startswith('/api/'):
         response = jsonify({'error': 'Internal server error', 'details': str(error)})
-        response.headers.add('Access-Control-Allow-Origin', FRONTEND_URL or 'http://localhost:5190')
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5190')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response, 500
-    return redirect(FRONTEND_URL or 'http://localhost:5190')
+    return redirect('http://localhost:5190/')
 
 
 # ============================================================================
