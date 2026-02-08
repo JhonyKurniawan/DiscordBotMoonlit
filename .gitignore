@@ -1,5 +1,7 @@
 # Environment & Secrets
 .env
+.env.*
+!.env*.example
 *.db
 nul
 =4.12.0
