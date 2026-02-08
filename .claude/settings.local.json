@@ -10,7 +10,9 @@
       "Bash(curl:*)",
       "Bash(nslookup:*)",
       "mcp__web-reader__webReader",
-      "Bash(nc:*)"
+      "Bash(nc:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)"
     ]
   }
 }
