@@ -1,6 +1,4 @@
 # Environment & Secrets
-.env
-config.py
 *.db
 nul
 
