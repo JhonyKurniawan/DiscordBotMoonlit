@@ -145,6 +145,12 @@ def can_manage_guild(guild):
 # ROUTES
 # ============================================================================
 
+@app.route('/')
+def serve_index():
+    """Serve Vue frontend index page."""
+    return send_from_directory(FRONTEND_DIST, 'index.html')
+
+
 @app.route('/api/auth/discord')
 def auth_discord():
     """Redirect to Discord OAuth2 login."""
