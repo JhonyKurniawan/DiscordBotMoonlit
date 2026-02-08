@@ -9,7 +9,8 @@
       "Bash(test:*)",
       "Bash(curl:*)",
       "Bash(nslookup:*)",
-      "mcp__web-reader__webReader"
+      "mcp__web-reader__webReader",
+      "Bash(nc:*)"
     ]
   }
 }
