@@ -21,21 +21,25 @@ load_dotenv()
 
 # Global processes
 processes = []
+running = True
 
 
 def stream_output(process, name):
     """Stream output dari proses dan tambahkan prefix nama service"""
     try:
         for line in iter(process.stdout.readline, ''):
-            if line:
+            if line and running:
                 print(f"[{name}] {line.rstrip()}")
-    except:
-        pass
+                sys.stdout.flush()
+    except Exception as e:
+        if running:
+            print(f"[{name}] Output error: {e}")
 
 
 def run_bot():
     """Jalankan Discord bot dari root directory"""
     print("[START] Starting Discord Bot...")
+    sys.stdout.flush()
     return subprocess.Popen(
         [sys.executable, "bot.py"],
         stdout=subprocess.PIPE,
@@ -48,6 +52,7 @@ def run_bot():
 def run_flask():
     """Jalankan Flask backend sebagai module dari root directory"""
     print("[START] Starting Flask Dashboard...")
+    sys.stdout.flush()
     return subprocess.Popen(
         [sys.executable, "-m", "dashboard.backend.app"],
         stdout=subprocess.PIPE,
@@ -59,7 +64,10 @@ def run_flask():
 
 def signal_handler(sig, frame):
     """Handle Ctrl+C untuk shutdown semua proses"""
+    global running
+    running = False
     print("\n[INFO] Shutting down all services...")
+    sys.stdout.flush()
     for proc in processes:
         if proc.poll() is None:  # Proses masih berjalan
             proc.terminate()
@@ -72,7 +80,7 @@ def signal_handler(sig, frame):
 
 
 def main():
-    global processes
+    global processes, running
 
     # Setup signal handler
     signal.signal(signal.SIGINT, signal_handler)
@@ -82,12 +90,14 @@ def main():
     print("  DISCORD BOT MOONLIT - CLOUD DEPLOYMENT")
     print("=" * 50)
     print()
+    sys.stdout.flush()
 
     # Check required environment variables
     token = os.getenv('DISCORD_BOT_TOKEN')
     if not token:
         print("[ERROR] DISCORD_BOT_TOKEN not found in environment!")
         print("[ERROR] Please set DISCORD_BOT_TOKEN environment variable.")
+        sys.stdout.flush()
         sys.exit(1)
 
     print(f"[INFO] Prefix: {os.getenv('PREFIX', '!')}")
@@ -95,32 +105,54 @@ def main():
     print(f"[INFO] Dashboard URL: {os.getenv('DASHBOARD_BASE_URL', 'Not set')}")
     print(f"[INFO] Flask Port: {os.getenv('PORT', '12066')}")
     print()
+    sys.stdout.flush()
 
     # Jalankan Discord Bot
     try:
         bot_proc = run_bot()
         processes.append(bot_proc)
-        threading.Thread(target=stream_output, args=(bot_proc, "BOT"), daemon=True).start()
+        # Use non-daemon thread so it keeps running
+        threading.Thread(target=stream_output, args=(bot_proc, "BOT"), daemon=False).start()
     except Exception as e:
         print(f"[ERROR] Failed to start Discord Bot: {e}")
+        sys.stdout.flush()
 
     # Jalankan Flask Dashboard
     try:
         flask_proc = run_flask()
         processes.append(flask_proc)
-        threading.Thread(target=stream_output, args=(flask_proc, "API"), daemon=True).start()
+        # Use non-daemon thread so it keeps running
+        threading.Thread(target=stream_output, args=(flask_proc, "API"), daemon=False).start()
     except Exception as e:
         print(f"[ERROR] Failed to start Flask Dashboard: {e}")
+        sys.stdout.flush()
 
     print()
     print("[INFO] All services started!")
     print("[INFO] Press Ctrl+C to stop all services")
     print()
+    sys.stdout.flush()
 
-    # Tunggu proses selesai
+    # Keep main thread alive and monitor processes
     try:
-        for proc in processes:
-            proc.wait()
+        while running and processes:
+            time.sleep(1)
+
+            # Check if any process died
+            for i, proc in enumerate(processes):
+                if proc.poll() is not None:
+                    print(f"[WARNING] Process {i} exited with code {proc.returncode}")
+                    sys.stdout.flush()
+
+            # Remove dead processes
+            processes = [p for p in processes if p.poll() is None]
+
+            # If all processes died, exit
+            if not processes:
+                print("[ERROR] All processes have exited. Shutting down...")
+                sys.stdout.flush()
+                sys.exit(1)
+
     except KeyboardInterrupt:
         signal_handler(None, None)
 
