@@ -1,16 +1,18 @@
-# File: cloudflared.yml
-tunnel: 56f6de19-9360-44f6-b955-e01c44fbae45  # Ganti dengan Tunnel ID Anda
+# Cloudflare Tunnel Configuration
+# Domain: moonlit-bot.my.id
 
-credentials-file: C:\Users\morville\.cloudflared\56f6de19-9360-44f6-b955-e01c44fbae45.json  # Ganti path sesuai
+tunnel: 56f6de19-9360-44f6-b955-e01c44fbae45
+
+credentials-file: C:\Users\morville\.cloudflared\56f6de19-9360-44f6-b955-e01c44fbae45.json
 
 ingress:
-  # Dashboard Flask
+  # Dashboard Frontend (Vue) - Port 5190
   - hostname: moonlit-bot.my.id
+    service: http://localhost:5190
+
+  # API Backend (Flask) - Port 5001
+  - hostname: api.moonlit-bot.my.id
     service: http://localhost:5001
 
-  # Atau subdomain untuk dashboard:
-  # - hostname: dashboard.moonlit-bot.my.id
-  #   service: http://localhost:5001
-
-  # Fallback untuk traffic lain
+  # Fallback
   - service: http_status:404
