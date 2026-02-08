@@ -3,6 +3,12 @@
 .env.*
 !.env*.example
 *.db
+
+# Config files with sensitive data
+config.py
+dashboard/frontend/.env
+dashboard/frontend/.env.local
+dashboard/frontend/.env.production
 nul
 =4.12.0
 =4.2.0
@@ -45,9 +51,10 @@ uploads/
 logs/
 
 # Build
-dist/
 build/
 *.egg-info/
+# Allow frontend dist folder for production deployment
+!dashboard/frontend/dist/
 
 # WispByte deployment
 .wispbyte/
