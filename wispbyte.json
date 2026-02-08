@@ -4,9 +4,10 @@
   "repository": "https://github.com/JhonyKurniawan/DiscordBotMoonlit.git",
   "branch": "main",
   "python_version": "3.10",
-  "build_command": "pip install -r requirements.txt",
+  "build_command": "pip install -U --prefix .local -r requirements.txt",
   "start_command": "python start.py",
   "environment": {
+    "PORT": "12066",
     "DISCORD_BOT_TOKEN": "${DISCORD_BOT_TOKEN}",
     "DISCORD_CLIENT_ID": "${DISCORD_CLIENT_ID}",
     "DISCORD_CLIENT_SECRET": "${DISCORD_CLIENT_SECRET}",
@@ -14,17 +15,20 @@
     "DASHBOARD_SECRET_KEY": "${DASHBOARD_SECRET_KEY}",
     "DASHBOARD_BASE_URL": "${DASHBOARD_BASE_URL}",
     "DATABASE_URL": "${DATABASE_URL}",
-    "GROQ_API_KEY": "${GROQ_API_KEY}"
+    "GROQ_API_KEY": "${GROQ_API_KEY}",
+    "PREFIX": "!"
   },
   "env_variables": {
+    "PORT": "12066 - Flask port (WispByte server port)",
     "DISCORD_BOT_TOKEN": "Required - Discord Bot Token",
     "DISCORD_CLIENT_ID": "Required - Discord Client ID",
     "DISCORD_CLIENT_SECRET": "Required - Discord Client Secret",
-    "DISCORD_REDIRECT_URI": "Required - Redirect URI (e.g., https://moonlit-bot.my.id/callback)",
-    "DASHBOARD_SECRET_KEY": "Required - Flask secret key",
-    "DASHBOARD_BASE_URL": "Required - Dashboard base URL",
+    "DISCORD_REDIRECT_URI": "Required - https://moonlit-bot.my.id/callback",
+    "DASHBOARD_SECRET_KEY": "Required - Flask secret key untuk session",
+    "DASHBOARD_BASE_URL": "Required - https://moonlit-bot.my.id",
     "DATABASE_URL": "Required - PostgreSQL/Supabase connection string",
-    "GROQ_API_KEY": "Required - Groq API key for chatbot"
+    "GROQ_API_KEY": "Required - Groq API key untuk chatbot",
+    "PREFIX": "Optional - Bot command prefix (default: !)"
   },
   "ports": [12066],
   "health_check_path": "/",
