@@ -23,6 +23,9 @@ load_dotenv()
 processes = []
 running = True
 
+# Get current environment to pass to subprocess
+env = os.environ.copy()
+
 
 def stream_output(process, name):
     """Stream output dari proses dan tambahkan prefix nama service"""
@@ -45,7 +48,8 @@ def run_bot():
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
-        bufsize=1
+        bufsize=1,
+        env=env  # Pass environment variables
     )
 
 
@@ -53,12 +57,21 @@ def run_flask():
     """Jalankan Flask backend sebagai module dari root directory"""
     print("[START] Starting Flask Dashboard...")
     sys.stdout.flush()
+
+    # Set PORT explicitly for Flask
+    flask_port = os.getenv('PORT', '12066')
+    env['PORT'] = flask_port
+
+    print(f"[INFO] Flask will run on port: {flask_port}")
+    sys.stdout.flush()
+
     return subprocess.Popen(
         [sys.executable, "-m", "dashboard.backend.app"],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
-        bufsize=1
+        bufsize=1,
+        env=env  # Pass environment variables
     )
 
 
