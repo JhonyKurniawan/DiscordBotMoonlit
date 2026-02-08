@@ -1,18 +1,15 @@
 # Cloudflare Tunnel Configuration
 # Domain: moonlit-bot.my.id
+# Flask (port 5001) serves both API and Vue frontend
 
 tunnel: 56f6de19-9360-44f6-b955-e01c44fbae45
 
 credentials-file: C:\Users\morville\.cloudflared\56f6de19-9360-44f6-b955-e01c44fbae45.json
 
 ingress:
-  # Dashboard Frontend (Vue) - Port 5190
+  # All traffic to moonlit-bot.my.id -> Flask (port 5001)
   - hostname: moonlit-bot.my.id
-    service: http://203.153.20.58:5190
-
-  # API Backend (Flask) - Port 5001
-  - hostname: api.moonlit-bot.my.id
-    service: http://203.153.20.58:5001
+    service: http://localhost:5001
 
   # Fallback
   - service: http_status:404

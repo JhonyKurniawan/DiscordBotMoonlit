@@ -71,10 +71,10 @@ Update terakhir: Februari 2026
 
 ```bash
 # Windows
-nslookup namadomainanda.my.id
+nslookup moonlit-bot.my.id
 
 # Linux/Mac
-dig namadomainanda.my.id
+dig moonlit-bot.my.id
 ```
 
 Harus menunjuk ke IP Cloudflare.
@@ -100,7 +100,7 @@ Setelah nameserver aktif, buat DNS records:
 | Type | Name | Content | Proxy | TTL |
 |------|------|---------|-------|-----|
 | A | @ | 192.0.2.1 | Proxied (ON) | Auto |
-| CNAME | api | yourdomain.my.id | Proxied (ON) | Auto |
+| CNAME | api | moonlit-bot.my.id | Proxied (ON) | Auto |
 
 **Catatan:** IP `192.0.2.1` adalah dummy IP karena kita pakai tunnel.
 

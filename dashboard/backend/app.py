@@ -7,7 +7,7 @@ import os
 import sys
 import time
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify, session, redirect
+from flask import Flask, request, jsonify, session, redirect, send_from_directory, send_file
 from flask_cors import CORS
 from functools import wraps
 import requests
@@ -16,6 +16,9 @@ from . import database as db
 
 # Add parent directory to path for config import
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Path to frontend dist folder
+FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'dist')
 
 # Load configuration
 try:
@@ -141,6 +144,17 @@ def can_manage_guild(guild):
 # ============================================================================
 # ROUTES
 # ============================================================================
+
+# Serve Vue Frontend (Production)
+@app.route('/')
+@app.route('/<path:path>')
+def serve_frontend(path=''):
+    """Serve Vue frontend from dist folder."""
+    if path and os.path.exists(os.path.join(FRONTEND_DIST, path)):
+        return send_from_directory(FRONTEND_DIST, path)
+    # For SPA routing, always return index.html
+    return send_from_directory(FRONTEND_DIST, 'index.html')
+
 
 @app.route('/api/auth/discord')
 def auth_discord():
@@ -1256,11 +1270,11 @@ def proxy_avatar():
 
 @app.errorhandler(404)
 def not_found(error):
-    """Handle 404 errors."""
+    """Handle 404 errors - serve Vue frontend for SPA routing."""
     if request.path.startswith('/api/'):
         return jsonify({'error': 'Not found'}), 404
-    # For non-API routes, redirect to Vue frontend (production domain)
-    return redirect('https://moonlit-bot.my.id/')
+    # For non-API routes, serve index.html for SPA routing
+    return send_from_directory(FRONTEND_DIST, 'index.html')
 
 
 @app.errorhandler(500)
@@ -1268,10 +1282,11 @@ def internal_error(error):
     """Handle 500 errors."""
     if request.path.startswith('/api/'):
         response = jsonify({'error': 'Internal server error', 'details': str(error)})
-        response.headers.add('Access-Control-Allow-Origin', 'https://moonlit-bot.my.id')
+        response.headers.add('Access-Control-Allow-Origin', '*')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response, 500
-    return redirect('https://moonlit-bot.my.id/')
+    # Serve index.html for SPA
+    return send_from_directory(FRONTEND_DIST, 'index.html')
 
 
 # ============================================================================

@@ -3,7 +3,12 @@
     "allow": [
       "Bash(git config:*)",
       "Bash(git remote set-url:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(test:*)",
+      "Bash(curl:*)",
+      "Bash(nslookup:*)"
     ]
   }
 }
