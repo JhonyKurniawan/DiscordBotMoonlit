@@ -12,14 +12,6 @@ cd DiscordBotMoonlit
 # Install dependencies
 pip install -r requirements.txt
 
-# Setup konfigurasi
-copy .env.example .env
-copy config.example.py config.py
-
-# Edit .env dan config.py sesuai kebutuhan
-notepad .env
-notepad config.py
-
 # Jalankan bot
 python run.py
 ```
@@ -86,8 +78,7 @@ git pull
 
 ## Catatan Penting
 
-- File `.env` berisi token rahasia dan TIDAK di-track di git
-- File `config.py` perlu dibuat manual dari `config.example.py`
+- File `.env` dan `config.py` sudah tersedia (tidak di-track di git untuk keamanan)
 - Repository ini bersifat **PRIVATE**
 
 ## Troubleshooting
