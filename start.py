@@ -96,9 +96,10 @@ def main():
     token = os.getenv('DISCORD_BOT_TOKEN')
     if not token:
         print("[ERROR] DISCORD_BOT_TOKEN not found in environment!")
+        print("[ERROR] Bot will NOT start, but Flask dashboard will still run.")
         print("[ERROR] Please set DISCORD_BOT_TOKEN environment variable.")
         sys.stdout.flush()
-        sys.exit(1)
+        # Don't exit - let Flask run for health check
 
     print(f"[INFO] Prefix: {os.getenv('PREFIX', '!')}")
     print(f"[INFO] Guild ID: {os.getenv('GUILD_ID', 'Not set')}")
@@ -107,15 +108,18 @@ def main():
     print()
     sys.stdout.flush()
 
-    # Jalankan Discord Bot
-    try:
-        bot_proc = run_bot()
-        processes.append(bot_proc)
-        # Use non-daemon thread so it keeps running
-        threading.Thread(target=stream_output, args=(bot_proc, "BOT"), daemon=False).start()
-    except Exception as e:
-        print(f"[ERROR] Failed to start Discord Bot: {e}")
-        sys.stdout.flush()
+    # Jalankan Discord Bot (hanya jika token ada)
+    if token:
+        try:
+            bot_proc = run_bot()
+            processes.append(bot_proc)
+            # Use non-daemon thread so it keeps running
+            threading.Thread(target=stream_output, args=(bot_proc, "BOT"), daemon=False).start()
+        except Exception as e:
+            print(f"[ERROR] Failed to start Discord Bot: {e}")
+            sys.stdout.flush()
+    else:
+        print("[WARNING] Skipping Discord Bot startup (no token)")
 
     # Jalankan Flask Dashboard
     try:
