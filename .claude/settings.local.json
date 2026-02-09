@@ -13,7 +13,21 @@
       "Bash(nc:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "mcp__zread__search_doc"
+      "mcp__zread__search_doc",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" push origin --force --all)",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" push origin --force --tags)",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" stash pop)",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" add wispbyte_startup.sh)",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" commit -m \"Add WispByte startup script for cleaner deployment\")",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" commit -m \"Fix start.py: use non-daemon threads and add process monitoring\")",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" commit -m \"Fix: Flask should run even if DISCORD_BOT_TOKEN is missing\")",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" commit -m \"Fix: Pass environment variables to subprocess for Flask port\")",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" commit:*)",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" log --oneline -5)",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" revert 1e4efa3 --no-commit)",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" commit -m \"Revert: Remove auto-build, keep manual build only\")",
+      "mcp__zai-mcp-server__extract_text_from_screenshot",
+      "Bash(git -C \"d:\\\\Project\\\\DiscordBotNothing\" add -A)"
     ]
   }
 }

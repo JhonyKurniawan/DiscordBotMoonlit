@@ -20,24 +20,47 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Path to frontend dist folder
 FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'dist')
 
-# Load configuration
-try:
-    from config import (
-        DISCORD_CLIENT_ID,
-        DISCORD_CLIENT_SECRET,
-        DASHBOARD_SECRET_KEY,
-        DISCORD_REDIRECT_URI,
-        DASHBOARD_BASE_URL,
-        BOT_TOKEN
-    )
-    REDIRECT_URI = DISCORD_REDIRECT_URI
-except ImportError:
-    DISCORD_CLIENT_ID = os.environ.get('DISCORD_CLIENT_ID', '1466521449492648099')
-    DISCORD_CLIENT_SECRET = os.environ.get('DISCORD_CLIENT_SECRET', '')
-    DASHBOARD_SECRET_KEY = os.environ.get('DASHBOARD_SECRET_KEY', 'dev-secret-key-change-in-production')
-    REDIRECT_URI = os.environ.get('REDIRECT_URI', 'http://localhost:5001/callback')
-    BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN', '')
-    DASHBOARD_BASE_URL = os.environ.get('DASHBOARD_BASE_URL', 'http://localhost:5001')
+# Load configuration - PRIORITAS: Environment Variables (WispByte) > config.py
+# Di cloud deployment, environment variables harus diutamakan
+
+DISCORD_CLIENT_ID = os.environ.get('DISCORD_CLIENT_ID', '')
+DISCORD_CLIENT_SECRET = os.environ.get('DISCORD_CLIENT_SECRET', '')
+DASHBOARD_SECRET_KEY = os.environ.get('DASHBOARD_SECRET_KEY', '')
+BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN', '')
+DASHBOARD_BASE_URL = os.environ.get('DASHBOARD_BASE_URL', '')
+DISCORD_REDIRECT_URI = os.environ.get('DISCORD_REDIRECT_URI', '')
+
+REDIRECT_URI = DISCORD_REDIRECT_URI
+
+# Fallback ke config.py HANYA jika environment variables kosong (untuk local development)
+if not DISCORD_CLIENT_ID:
+    try:
+        from config import (
+            DISCORD_CLIENT_ID as cfg_client_id,
+            DISCORD_CLIENT_SECRET as cfg_client_secret,
+            DASHBOARD_SECRET_KEY as cfg_secret_key,
+            DISCORD_REDIRECT_URI as cfg_redirect_uri,
+            DASHBOARD_BASE_URL as cfg_base_url,
+            BOT_TOKEN as cfg_bot_token
+        )
+        DISCORD_CLIENT_ID = cfg_client_id
+        DISCORD_CLIENT_SECRET = cfg_client_secret
+        DASHBOARD_SECRET_KEY = cfg_secret_key
+        BOT_TOKEN = cfg_bot_token
+        DASHBOARD_BASE_URL = cfg_base_url
+        REDIRECT_URI = cfg_redirect_uri
+    except ImportError:
+        pass
+
+# Default values jika masih kosong
+if not DISCORD_CLIENT_ID:
+    DISCORD_CLIENT_ID = '1466521449492648099'
+if not DASHBOARD_SECRET_KEY:
+    DASHBOARD_SECRET_KEY = 'dev-secret-key-change-in-production'
+if not REDIRECT_URI:
+    REDIRECT_URI = 'http://localhost:5001/callback'
+if not DASHBOARD_BASE_URL:
+    DASHBOARD_BASE_URL = 'http://localhost:5001'
 
 # Debug print
 print(f'[DEBUG] CLIENT_ID={DISCORD_CLIENT_ID}')
