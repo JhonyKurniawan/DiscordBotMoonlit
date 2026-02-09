@@ -3,6 +3,7 @@ Discord Bot Moonlit - Cloud Deployment Start Script
 Untuk deployment di WispByte atau cloud hosting lainnya
 
 Menjalankan Discord Bot dan Flask Dashboard secara bersamaan.
+Environment variables dibaca langsung dari sistem (WispByte dashboard).
 """
 
 import os
@@ -14,10 +15,6 @@ import time
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
 
 # Global processes
 processes = []
